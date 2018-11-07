@@ -19,6 +19,8 @@ catkin_package(
    DEPENDS gazebo_plugins gazebo_ros robotiq_s_model_articulated_msgs roscpp
 )
 
+set(cxx_flags "-std=c++11")
+
 add_library(RobotiqHandPlugin src/RobotiqHandPlugin.cpp)
 set_target_properties(RobotiqHandPlugin PROPERTIES LINK_FLAGS "${ld_flags}")
 set_target_properties(RobotiqHandPlugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
