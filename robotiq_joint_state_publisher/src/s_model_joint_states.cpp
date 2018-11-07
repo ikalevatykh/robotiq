@@ -124,9 +124,9 @@ inline double Robotiq3::scissorJoint() const {
   // Max range for scissor mode should be 32 degrees [http://support.robotiq.com/display/IMB/6.1+Technical+dimensions].
   // That would mean that the limits of a single joint are -16 and +16.
   // By actually measuring the joint angles, the limits appear to be approximately at -11 and +11.
-  if(0 <= scissor && scissor <= 15) return 11.0*DEG_TO_RAD;
-  else if(15 < scissor && scissor <= 240) return (11.0-22.0*((scissor-15.0)/225.0))*DEG_TO_RAD;
-  else return -11.0*DEG_TO_RAD;
+  if(0 <= scissor && scissor <= 15) return 10.0*DEG_TO_RAD;
+  else if(15 < scissor && scissor <= 240) return (10.0-20.0*((scissor-15.0)/225.0))*DEG_TO_RAD;
+  else return -10.0*DEG_TO_RAD;
 }
 
 /**
