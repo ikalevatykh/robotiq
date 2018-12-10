@@ -16,6 +16,12 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(PkgConfig)
 
+find_path(MODBUS_INCLUDE_DIR modbus.h PATH_SUFFIXES modbus)
+find_library(MODBUS_LIBRARIES NAMES modbus)
+set(CMAKE_REQUIRED_INCLUDES ${MODBUS_INCLUDE_DIR})
+set(CMAKE_REQUIRED_LIBRARIES ${MODBUS_LIBRARIES})
+
+
 add_message_files(
   FILES
   Robotiq3FGripper_robot_input.msg
@@ -48,6 +54,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${MODBUS_INCLUDE_DIR}
 )
 
 add_library(${PROJECT_NAME}
@@ -84,6 +91,17 @@ add_executable(robotiq_3f_gripper_can_node
 target_link_libraries(robotiq_3f_gripper_can_node
   ${PROJECT_NAME}
   ${catkin_LIBRARIES}
+)
+
+add_executable(robotiq_3f_gripper_modbus_node
+  src/${PROJECT_NAME}/robotiq_3f_gripper_modbus_client.cpp
+  src/robotiq_3f_gripper_modbus_node.cpp
+)
+
+target_link_libraries(robotiq_3f_gripper_modbus_node
+  ${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+  ${MODBUS_LIBRARIES}
 )
 
 install(PROGRAMS nodes/Robotiq3FGripperSimpleController.py nodes/Robotiq3FGripperStatusListener.py
