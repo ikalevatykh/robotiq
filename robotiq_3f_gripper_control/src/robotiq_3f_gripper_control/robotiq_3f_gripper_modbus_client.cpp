@@ -26,7 +26,7 @@
 
 using namespace robotiq_3f_gripper_control;
 
-Robotiq3FGripperModbusClient::Robotiq3FGripperModbusClient(const std::string& ip_address)
+Robotiq3FGripperModbusClient::Robotiq3FGripperModbusClient(const std::string &ip_address)
     : ip_address_(ip_address)
 {
     modbus_ = modbus_new_tcp(ip_address.c_str(), 502);
@@ -44,14 +44,14 @@ void Robotiq3FGripperModbusClient::init(ros::NodeHandle nh)
     if (rc == -1) {
         ROS_ERROR_STREAM("MODBUS connection failed: " << modbus_strerror(errno));
         throw std::runtime_error(modbus_strerror(errno));
-    }        
+    }
 }
 
 void Robotiq3FGripperModbusClient::writeOutputs(const GripperOutput &output)
 {
     const uint8_t map[] = {
-        output.rACT + (output.rMOD << 1) + (output.rGTO << 3) + (output.rATR << 4),
-        output.rGLV + (output.rICF << 2) + (output.rICS << 3),
+        output.rACT | (output.rMOD << 1) | (output.rGTO << 3) | (output.rATR << 4),
+        output.rGLV | (output.rICF << 2) | (output.rICS << 3),
         0,
         output.rPRA,
         output.rSPA,
@@ -65,25 +65,35 @@ void Robotiq3FGripperModbusClient::writeOutputs(const GripperOutput &output)
         output.rPRS,
         output.rSPS,
         output.rFRS,
-        0
-    };
+        0};
 
-    int rc = modbus_write_registers(modbus_, 0, 8, (const uint16_t *) map);
-    if (rc == -1) {
+    uint16_t data[8];
+    for (int i = 0; i < 8; ++i) {
+        data[i] = (uint16_t(map[2 * i]) << 8) + map[2 * i + 1];
+    }
+
+    int rc = modbus_write_registers(modbus_, 0, 8, data);
+    if (rc == -1)
+    {
         ROS_ERROR_STREAM("MODBUS error: " << modbus_strerror(errno));
         throw std::runtime_error(modbus_strerror(errno));
-    }    
+    }
     output_ = output;
 }
 
 Robotiq3FGripperModbusClient::GripperInput Robotiq3FGripperModbusClient::readInputs() const
 {
-    uint8_t map[16];
-
-    int rc = modbus_read_registers(modbus_, 0, 8, (uint16_t *) map);
+    uint16_t data[8];
+    int rc = modbus_read_input_registers(modbus_, 0, 8, data);
     if (rc == -1) {
         ROS_ERROR_STREAM("MODBUS error: " << modbus_strerror(errno));
         throw std::runtime_error(modbus_strerror(errno));
+    }
+
+    uint8_t map[16];
+    for (int i = 0; i < 8; ++i) {
+        map[2 * i + 0] = (data[i] & 0xFF00) >> 8;
+        map[2 * i + 1] = data[i] & 0x00FF;
     }
 
     GripperInput input;
@@ -124,7 +134,7 @@ Robotiq3FGripperModbusClient::GripperInput Robotiq3FGripperModbusClient::readInp
     input.gPOS = map[13];
     input.gCUS = map[14];
 
-    return input;    
+    return input;
 }
 
 Robotiq3FGripperModbusClient::GripperOutput Robotiq3FGripperModbusClient::readOutputs() const
