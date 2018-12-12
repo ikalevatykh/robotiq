@@ -38,9 +38,9 @@ Robotiq3FGripperHWInterface::Robotiq3FGripperHWInterface(ros::NodeHandle nh, boo
     std::string prefix;
     prefix = nh.param<std::string>("prefix", "");
 
+    joint_names_.push_back(prefix+"finger_middle_joint_1");
     joint_names_.push_back(prefix+"finger_1_joint_1");
     joint_names_.push_back(prefix+"finger_2_joint_1");
-    joint_names_.push_back(prefix+"finger_middle_joint_1");
     joint_names_.push_back(prefix+"palm_finger_1_joint");
 
     joint_names_ = nh.param< std::vector<std::string> >("joint_names", joint_names_);
