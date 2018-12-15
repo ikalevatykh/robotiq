@@ -30,7 +30,7 @@ using namespace robotiq;
 Robotiq3FGripperAPI::Robotiq3FGripperAPI(boost::shared_ptr<Robotiq3FGripperClientBase> base)
     :base_(base)
 {
-    pos_to_ticks_ = 200;
+    pos_to_ticks_ = 121.2;
     pos_offset_ = 0;
     sci_to_ticks_ = -532;
     sci_offset_ = 0.22;
