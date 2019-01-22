@@ -65,6 +65,7 @@ public:
 
     void getPosition(double *posA, double *posB, double *posC, double *posS) const;
     void getPositionCmd(double *posA, double *posB, double *posC, double *posS) const;
+    void getVelocity(double *velA, double *velB, double *velC, double *velS) const;   
     void getCurrent(double *curA, double *curB, double *curC, double *curS) const;
     void getGripperStatus(InitializationMode *gACT,  GraspingMode *gMOD, ActionMode *gGTO, GripperStatus *gIMC, MotionStatus *gSTA) const;
     void getFaultStatus(FaultStatus *gFLT) const;

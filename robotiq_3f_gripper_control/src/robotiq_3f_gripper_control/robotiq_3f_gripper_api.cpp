@@ -32,13 +32,13 @@ Robotiq3FGripperAPI::Robotiq3FGripperAPI(boost::shared_ptr<Robotiq3FGripperClien
 {
     pos_to_ticks_ = 121.2;
     pos_offset_ = 0;
-    sci_to_ticks_ = -532;
+    sci_to_ticks_ = -664; //-532;
     sci_offset_ = 0.22;
     vel_to_ticks_ = 2.94;
     vel_offset_ = 22;
     force_to_ticks_ = 5.7;
     force_offset_ = 15;
-    cur_to_ticks_ = 10;
+    cur_to_ticks_ = 10;   
 
     //! Get current status
     read();
@@ -120,6 +120,24 @@ void Robotiq3FGripperAPI::getPositionCmd(double *posA, double *posB, double *pos
     *posB = (double)status_.gPRB/pos_to_ticks_ + pos_offset_;
     *posC = (double)status_.gPRC/pos_to_ticks_ + pos_offset_;
     *posS = (double)status_.gPRS/sci_to_ticks_ + sci_offset_;
+}
+
+void Robotiq3FGripperAPI::getVelocity(double *velA, double *velB, double *velC, double *velS) const
+{
+    *velA = *velB = *velC = *velS = 0;
+
+    if (status_.gGTO == 1 && status_.gDTA == 0) {
+        *velA = copysign(1.0, status_.gPRA - status_.gPOA);
+    }
+    if (status_.gGTO == 1 && status_.gDTB == 0) {
+        *velB = copysign(1.0, status_.gPRB - status_.gPOB);
+    }
+    if (status_.gGTO == 1 && status_.gDTC == 0) {
+        *velC = copysign(1.0, status_.gPRC - status_.gPOC);
+    }
+    if (status_.gGTO == 1 && status_.gDTS == 0) {
+        *velS = copysign(1.0, status_.gPOS - status_.gPRS);
+    }
 }
 
 void Robotiq3FGripperAPI::getCurrent(double *curA, double *curB, double *curC, double *curS) const

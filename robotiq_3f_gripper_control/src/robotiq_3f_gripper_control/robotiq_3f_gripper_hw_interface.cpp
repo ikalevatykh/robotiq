@@ -89,6 +89,8 @@ void Robotiq3FGripperHWInterface::read(ros::Duration d)
     hw_driver_->read();
     hw_driver_->getPosition(&j_curr_pos_[0], &j_curr_pos_[1], &j_curr_pos_[2], &j_curr_pos_[3]);
     hw_driver_->getCommandPos(&j_cmd_pos_[0], &j_cmd_pos_[1], &j_cmd_pos_[2], &j_cmd_pos_[3]);
+    hw_driver_->getVelocity(&j_curr_vel_[0], &j_curr_vel_[1], &j_curr_vel_[2], &j_curr_vel_[3]);
+    hw_driver_->getCurrent(&j_curr_eff_[0], &j_curr_eff_[1], &j_curr_eff_[2], &j_curr_eff_[3]);    
 
     hw_diagnostics_->update();
     hw_ros_->publish();
