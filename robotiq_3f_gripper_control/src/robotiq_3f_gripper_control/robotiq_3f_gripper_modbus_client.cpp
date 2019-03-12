@@ -34,6 +34,7 @@ Robotiq3FGripperModbusClient::Robotiq3FGripperModbusClient(const std::string &ip
 
 Robotiq3FGripperModbusClient::~Robotiq3FGripperModbusClient()
 {
+    modbus_flush(modbus_);
     modbus_close(modbus_);
     modbus_free(modbus_);
 }
